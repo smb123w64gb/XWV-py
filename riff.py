@@ -9,7 +9,7 @@ class RIFF(object):
             self.header = '    '
             self.data = bytearray()
         def read(self,f):
-            self.header = str(f.read(4))
+            self.header = str(f.read(4),'utf8')
             size = u32(f)
             self.data = f.read(size)
             return size + 8
@@ -22,16 +22,16 @@ class RIFF(object):
         self.spec = 'WAVE'
         self.chunks = []
     def read(self,f):
-        self.header = str(f.read(4))
+        self.header = str(f.read(4),'utf8')
         if(self.header != 'RIFF'):
+            print(self.header)
             print("NOT A RIFF")
             return 0
         self.size = u32(f)
         self.spec = str(f.read(4))
-        cur = 0
-        while((self.size+5) > cur):
+        while((self.size) > f.tell()):
             chk = self.CHUK()
-            cur += chk.read(f)
+            chk.read(f)
             self.chunks.append(chk)
     def write(self,f):
         f.write(self.header)
